@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://getbootstrap.com/docs/4.3/examples/album/ -->
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <title>eMercado - Todo lo que busques está aquí</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/album/">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <link href="css/dropzone.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="site-header sticky-top py-1 bg-dark">
+    <div class="container d-flex flex-column flex-md-row justify-content-between" id="navBar">
+      <a class="py-2 d-none d-md-inline-block" href="home.html">Inicio</a>
+      <a class="py-2 d-none d-md-inline-block" href="categories.html">Categorías</a>
+      <a class="py-2 d-none d-md-inline-block" href="products.html">Productos</a>
+      <a class="py-2 d-none d-md-inline-block" href="sell.html">Vender</a>
+    </div>
+  </nav>
+  <div class="container p-5">
+
+    <div class="text-center p-4">
+      <h2>Carrito de compras</h2> <br>
+      <p class="lead">Articulos a comprar.</p>
+    </div>
+
+    <!--Creo tabla en la que apareceran los datos del primer producto-->
+    <table class="table" id="tableContainerOne">
+      <tr>
+        <th colspan="2">Nombre</th>
+        <th>Costo</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+      </tr>
+    </table>
+    <br>
+    <!--Creo tabla en la que apareceran los datos del primer producto-->
+    <table class="table" id="tableContainerTwo">
+      <tr>
+        <th colspan="2">Nombre</th>
+        <th>Costo</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+      </tr>
+    </table>
+
+    <br>
+
+    <h4 class="mb-3" class="text-left">Tipo de envío</h4> <br>
+
+    <!--Creo inputs de tipo radio agregando id a cada uno para aplicar .addEventListener("change", function...
+    se calculara el precio total segun el radio seleccionado.-->
+    <div class="custom-control custom-radio">
+      <input id="premiumRadio" name="publicationType" type="radio" class="custom-control-input" checked="" required="">
+      <label class="custom-control-label" for="premiumRadio">Premium 2 a 5 días (15%)</label>
+    </div>
+
+    <div class="custom-control custom-radio">
+      <input id="expressRadio" name="publicationType" type="radio" class="custom-control-input" required="">
+      <label class="custom-control-label" for="expressRadio">Express 5 a 8 dias (7%)</label>
+    </div>
+
+    <div class="custom-control custom-radio">
+      <input id="standardradio" name="publicationType" type="radio" class="custom-control-input" required="">
+      <label class="custom-control-label" for="standardradio">Standard 12 a 15 dias (5%)</label>
+    </div>
+
+    <br>
+    <br>
+
+    <h4 class="mb-3" class="text-left">Costos</h4> <br>
+
+    <!--Creo select con oninput para ejecutar la funcion especificada cuando es modificada la opcion seleccionada-->
+    <div class="col-md-4 mb-3">
+      <label>Moneda</label>
+      <select oninput="updateAllCosts()" class="custom-select d-block w-100" id="articleCurrency" required="">
+        <option selected="">Pesos Uruguayos (UYU)</option>
+        <option>Dólares (USD)</option>
+      </select>
+    </div>
+
+    <br>
+
+    <!--Creo lista en la que apareceran los calculos de la funcion updateAllCost-->
+    <ul class="list-group mb-3">
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 class="my-0">Subtotal</h6>
+          <small class="text-muted">Costo unitario del producto por cantidad</small>
+        </div>
+        <span class="text-muted" id="productCostText">-</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 class="my-0">Costo de envio</h6>
+          <small class="text-muted">Según el tipo de envio</small>
+        </div>
+        <span class="text-muted" id="costShipping">-</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span>Total ($)</span>
+        <strong id="totalCostText">-</strong>
+      </li>
+    </ul>
+
+    <br>
+
+    <!-- Modal -->
+    <!-- Creo boton para abrir modal -->
+    <a id="payButton" class="btn btn-primary btn-lg" data-toggle="modal" onclick="showAlertButton();">Comprar</a>
+
+    <div class="modal fade" id="ventana">
+      <!-- Crea la ventana modal -->
+      <div class="modal-dialog modal-dialog-scrollable">
+        <!-- creo una barra de desplazamento para el modal. -->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" style="color: rgb(67,153,243);">Forma de pago</h3> <!-- Titulo del modal  -->
+            <!-- Creo un boton para cerrar el modal -->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+
+            <form action="" id="formModal">
+              <div class="custom-control custom-radio">
+                <!-- Al estar seleccionado esta opcion de radio ejecutara la function check que deshabilita y habilita inputs -->
+                <input type="radio" name="payOptions" id="radioCard" onclick="check();" checked required=""> Tarjeta de
+                crédito
+              </div>
+              <br>
+              <!-- columna en que estara todos los inputs -->
+              <div class="col">
+                <div class="row"> <!-- fila que contendra los sig. 2 inputs distribuidos en 2 culumnas. -->
+                  <div class="col">
+                    <label class="w3-text-blue" for="targetNumber">Número de tarjeta</label>
+                    <input type="number" class="form-control w3-input w3-border" id="targetNumber" name="payOption1"
+                      placeholder="Ej: xxxx xxxx xxxx xxxx" style="width:100%;" disabled>
+                  </div>
+                  <div class="col">
+                    <label class="w3-text-blue" for="cvv">Código de seguridad</label>
+                    <input type="number" class="form-control w3-input w3-border" id="cvv" name="payOption1"
+                      placeholder="cvv" style="width:40%;" disabled>
+                  </div>
+                </div>
+                <br>
+                <!-- Select que se modificara dependiendo del año eleccionado -->
+                <label class="w3-text-blue" for="validDateMonth">Vencimiento</label>
+                <select class="form-control w3-input w3-border" style="width: 50%;" name="payOption1"
+                  id="validDateMonth" disabled>
+                  <option value="11">Noviembre</option>
+                  <option value="12">Deciembre</option>
+                </select>
+                <select class="form-control w3-input w3-border" style="width: 50%;" name="payOption1" id="validDateYear"
+                  onchange="showMonth2020()" disabled>
+                  <option value="16"> 2020</option>
+                  <option value="17"> 2021</option>
+                  <option value="18"> 2022</option>
+                  <option value="19"> 2023</option>
+                  <option value="20"> 2024</option>
+                  <option value="21"> 2025</option>
+                </select>
+                <br>
+                <br>
+                <label class="w3-text-blue" for="namePropietary">Nombre(propietario)</label>
+                <input type="text" class="form-control w3-input w3-border" id="namePropietary" name="payOption1"
+                  placeholder="Nombre" style="width:90%;" disabled>
+                <hr>
+                
+                <!-- Termina y inicia las opciones del 2do radio button. -->
+                <div class="custom-control custom-radio">
+                  <input type="radio" name="payOptions" id="radioBank" onclick="check();">  <!-- Al estar seleccionado esta opcion de radio ejecutara la function check que deshabilita y habilita inputs -->
+                  Transferencia bancaria
+                </div>
+
+                <br>
+
+                <label class="w3-text-blue" for="numberAccount">Número de cuenta</label>
+                <input type="number" class="form-control w3-input w3-border" id="numberAccount" name="payOption2"
+                  placeholder="Cuenta" style="width:90%;" disabled>
+
+                <br>
+                <label class="w3-text-blue" for="ci">Cédula de identidad</label>
+                <input type="number" class="form-control w3-input w3-border" id="ci" name="payOption2"
+                  placeholder="Sin puntos ni guiones" style="width:50%;" disabled>
+
+                <br>
+                <hr>
+
+                 <!-- Unicos 3 inputs que no dependen de los radio buttons para estar habilitados -->
+                <div class="row">
+                  <div class="col">
+                    <label class="w3-text-blue" for="street">Calle</label>
+                    <input type="text" id="street" class="form-control w3-input w3-border" maxlength="30" name="street"
+                      style="width:90%;" disabled>
+                  </div>
+                  <div class="col">
+                    <label class="w3-text-blue" for="number">Número</label>
+                    <input type="number" class="form-control w3-input w3-border" id="streetNumber" name="number"
+                      style="width:50%;" disabled>
+                  </div>
+                </div>
+                <br>
+                <label class="w3-text-blue" for="streetCorner">Esquina</label>
+                <input type="text" class="form-control w3-input w3-border" id="streetCorner" maxlength="50"
+                  name="streetCorner" style="width:43.8%;" disabled>
+
+                <div class="modal-footer">
+
+                   <!-- Creo un boton para cerrar el modal y otro paar finalizar la compra -->
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                  <button type="submit" class="btn btn-primary" onclick="compra();">Finalizar compra</button>
+
+                   <!-- Creo 2 alertas que apareceran dependiendo de si completaron los inputs necesarios, seran ocultados con el metodo hide de Jquery -->
+                  <div id="alertSI" class="alert alert-success alert-dismissible fade show" role="alert"
+                    style="width: max-content;">¡¡Su compra se realizo con exito!!
+                  </div>
+                  <div id="alertNO" class="alert alert-danger" role="alert" style="width: max-content;">¡Debe completar
+                    los datos!
+                  </div>
+
+
+                </div>
+
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+ <!-- Div que contendra la alerta segun si los campos estan vacios o no -->
+    <div id="alertContainer"></div>
+
+
+
+
+
+
+
+
+    <!--
+    <div id="chargeText">
+      <h4 class="mb-3" class="text-left">Realizar compra</h4> <br>
+      <h5>Seleccionar forma de pago<button style="margin: 25px;" type="button" class="btn btn-primary"
+          data-toggle="modal" data-target="#staticBackdrop">
+          Seleccione
+        </button></h5>
+      <p style="color: rgb(173, 68, 68);">Debe seleccionar una forma de pago.</p>
+      <br>
+    </div>
+  -->
+
+
+
+    <!--<div class="alert alert-danger" role="alert" style="position: relative; width:auto; top: 0;">
+      <h4 class="alert-heading">¡A trabajar! :)</h4>
+      <p>Esta sección corresponde a: Entrega 5 (Fecha de entrega: 11/10/2020) y Entrega 6 (Fecha de entrega: 25/10/2020).</p>
+      <hr>
+      <p class="mb-0">Para saber qué debes hacer, fijate en la actividad en CREA correspondiente a esta entrega.</p>
+    </div>
+  -->
+
+  </div>
+  <div id="spinner-wrapper">
+    <div class="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/dropzone.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+
+</html>
